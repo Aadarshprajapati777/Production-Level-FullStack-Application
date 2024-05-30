@@ -18,11 +18,12 @@ const uploadOnCloudinary = async (localfilepath) => {
             resource_type: "auto"
         });
 
-        fs.unlinkSync(localfilepath);
         console.log("fill has been uploaded",result.url);
-        return result.url;
+        return result;
     }
         catch(err){
+            fs.unlinkSync(localfilepath);
+
             console.log(err);
         }
 

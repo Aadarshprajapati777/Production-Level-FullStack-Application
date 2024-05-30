@@ -45,10 +45,24 @@ const userSchema = new Schema({
      refreshToken: {
          type:String,
      },
-     timestamps: true
+        role: {
+            type:String,
+            enum:["user", "service-provider"],
+            default:"user"
+        },
+        isVerified: {
+            type:Boolean,
+            default:false
+        },
+    },
+    
+    {timestamps:true}
+);
+        
 
 
-})
+
+
 
 
 userSchema.pre("save", async function(next){
