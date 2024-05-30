@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-
+import bcrypt from "bcrypt";
 const userSchema = new Schema({
         userName: {
             type:String,
@@ -49,6 +49,37 @@ const userSchema = new Schema({
 
 
 })
+
+
+userSchema.pre("save", async function(next){
+    if(this.isModified("password")){
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+})
+
+
+userSchema.methods.isPasswordCorrect = async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword, this.password);
+}
+
+
+userSchema.methods.generateAccessToken = function(){
+    return jwt.sign({
+        id:this._id,
+        userName:this.userName,
+        email:this.email,
+        fullName:this.fullName,
+    
+    }, process.env.ACCESS_TOKEN_SECRET, {expiresIn:process.env.ACCESS_TOKEN_EXPIRY, algorithm:"HS256"});
+
+}
+userSchema.methods.generateRefreshToken = function(){
+    return jwt.sign({
+        id:this._id
+    }, process.env.ACCESS_TOKEN_SECRET, {expiresIn:process.env.ACCESS_TOKEN_EXPIRY, algorithm:"HS256"});
+
+}
 
 
 export const User = mongoose.model("User", userSchema);
