@@ -48,6 +48,8 @@ const registerUser = asyncHandler(async (req, res) => {
     const existingUser = await User.findOne({
         $or: [{userName}, {email}]
     });
+
+    console.log("existingUser", existingUser);
     if(existingUser){
         throw new ApiError(409, "User already exists");
     }
@@ -112,8 +114,13 @@ const loginUser = asyncHandler( async(req, res) => {
         }
 
         const user = await User.findOne({
-            $or:[{email, userName}]
+            $or:[{ userName}]
         })
+
+        console.log("email", email);
+        console.log("userName", userName);
+
+        console.log("user", user);  
 
         if(!user){
             throw new ApiError(401, "User Not found");
@@ -180,5 +187,6 @@ const logoutUser = asyncHandler(async(req, res) => {
 
 export {
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 };
