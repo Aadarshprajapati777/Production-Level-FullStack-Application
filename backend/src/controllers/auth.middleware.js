@@ -17,7 +17,7 @@ const verifyJWT = asyncHandler(async(req, _, next) => {
      console.log("user", user);
      if(!user){
          throw new ApiError(401, "Unauthorized");
-     }
+     } 
  
      req.user = user;
 
